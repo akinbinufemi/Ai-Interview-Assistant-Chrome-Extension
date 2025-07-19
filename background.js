@@ -9,6 +9,8 @@ let apiKeys = {};
 const BACKEND_URL = 'https://sparkling-tiramisu-90d945.netlify.app/.netlify/functions';
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log('Background received message:', request.action);
+  
   switch (request.action) {
     case 'startListening':
       startListening();
@@ -27,6 +29,28 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       break;
     case 'saveTranscriptToBackend':
       saveTranscriptToBackend(request.transcript);
+      break;
+    case 'transcribeAudio':
+      // Handle audio transcription from content script
+      if (request.audioData) {
+        transcribeWithAssemblyAI(request.audioData);
+      }
+      break;
+    case 'status':
+      // Forward status messages to UI
+      chrome.runtime.sendMessage({
+        action: 'status',
+        message: request.message,
+        type: request.type
+      });
+      break;
+    case 'error':
+      // Forward error messages to UI
+      console.error('Content script error:', request.message);
+      chrome.runtime.sendMessage({
+        action: 'error',
+        message: request.message
+      });
       break;
   }
 });
@@ -108,32 +132,46 @@ function startListening() {
 }
 
 function injectContentScriptAndStartCapture(tabId, streamId) {
+  console.log('Starting capture for tab:', tabId, 'with streamId:', streamId);
+  
+  // Since content script is now registered in manifest, we can directly send the message
+  // But we'll still inject as fallback for reliability
+  const tryStartCapture = () => {
+    chrome.tabs.sendMessage(tabId, { 
+      action: 'startCapture', 
+      streamId: streamId,
+      useAssemblyAI: !!apiKeys.assemblyai
+    }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('Error starting capture:', chrome.runtime.lastError);
+        sendStatusMessage('Error: Could not start audio capture - ' + chrome.runtime.lastError.message, 'error');
+      } else if (response && response.success) {
+        console.log('Capture started successfully:', response.message);
+        sendStatusMessage('Audio capture started successfully', 'success');
+      } else if (response && !response.success) {
+        console.error('Capture failed:', response.error);
+        sendStatusMessage('Error: ' + response.error, 'error');
+      } else {
+        console.log('Capture command sent, no response received');
+        sendStatusMessage('Audio capture command sent', 'info');
+      }
+    });
+  };
+
+  // Try to inject content script as fallback
   chrome.scripting.executeScript({
     target: { tabId: tabId },
     files: ['content.js']
   }, () => {
     if (chrome.runtime.lastError) {
-      console.error('Error injecting content script:', chrome.runtime.lastError);
-      sendStatusMessage('Error: Could not inject content script', 'error');
-      return;
+      console.log('Content script injection failed (may already be injected):', chrome.runtime.lastError);
+      // Try to start capture anyway, content script might already be loaded
+      setTimeout(tryStartCapture, 100);
+    } else {
+      console.log('Content script injected successfully');
+      // Wait a bit to ensure the content script is fully loaded
+      setTimeout(tryStartCapture, 500);
     }
-    
-    // Wait a bit to ensure the content script is fully loaded
-    setTimeout(() => {
-      chrome.tabs.sendMessage(tabId, { 
-        action: 'startCapture', 
-        streamId: streamId,
-        useAssemblyAI: !!apiKeys.assemblyai
-      }, (response) => {
-        if (chrome.runtime.lastError) {
-          console.error('Error starting capture:', chrome.runtime.lastError);
-          sendStatusMessage('Error: Could not start audio capture', 'error');
-        } else {
-          console.log('Capture started successfully');
-          sendStatusMessage('Audio capture started', 'success');
-        }
-      });
-    }, 100);
   });
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "ai-interview-assistant-backend",
-  "version": "1.0.0",
-  "description": "Backend functions for AI Interview Assistant Chrome Extension",
+  "version": "2.0.0",
+  "description": "Enhanced AI Interview Assistant with real-time streaming transcription and AI responses",
   "main": "index.js",
   "scripts": {
     "dev": "netlify dev",
@@ -9,7 +9,9 @@
     "deploy": "netlify deploy --prod"
   },
   "dependencies": {
-    "mongodb": "^6.3.0"
+    "mongodb": "^6.3.0",
+    "assemblyai": "^4.8.0",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "netlify-cli": "^17.0.0"
@@ -19,8 +21,11 @@
     "ai",
     "interview",
     "transcription",
-    "netlify"
+    "netlify",
+    "assemblyai",
+    "gemini",
+    "real-time"
   ],
-  "author": "Your Name",
+  "author": "AI Interview Assistant Team",
   "license": "MIT"
 }

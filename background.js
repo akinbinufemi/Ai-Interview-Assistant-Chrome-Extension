@@ -6,7 +6,7 @@ let interviewContext = { jobDescription: '', resume: '' };
 let apiKeys = {};
 
 // Netlify backend URL - replace with your actual Netlify function URL
-const BACKEND_URL = 'https://your-netlify-app.netlify.app/.netlify/functions';
+const BACKEND_URL = 'https://sparkling-tiramisu-90d945.netlify.app/.netlify/functions';
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   switch (request.action) {

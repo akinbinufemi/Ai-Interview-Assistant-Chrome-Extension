@@ -1,0 +1,26 @@
+{
+  "name": "ai-interview-assistant-backend",
+  "version": "1.0.0",
+  "description": "Backend functions for AI Interview Assistant Chrome Extension",
+  "main": "index.js",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required'",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "mongodb": "^6.3.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "keywords": [
+    "chrome-extension",
+    "ai",
+    "interview",
+    "transcription",
+    "netlify"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

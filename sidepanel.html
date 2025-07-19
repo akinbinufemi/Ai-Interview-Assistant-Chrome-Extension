@@ -9,11 +9,73 @@
 <body>
   <div id="app">
     <h3>AI Interview Assistant</h3>
-    <input type="password" id="apiKeyInput" placeholder="Enter your OpenAI API Key here">
-    <button id="saveApiKey">Save API Key</button>
-    <button id="toggleListening">Start Listening</button>
-    <div id="transcript"></div>
-    <div id="aiResponse"></div>
+    
+    <!-- AI Provider Selection -->
+    <div class="section">
+      <label for="aiProvider">AI Provider:</label>
+      <select id="aiProvider">
+        <option value="openai">OpenAI GPT</option>
+        <option value="gemini">Google Gemini</option>
+      </select>
+    </div>
+
+    <!-- API Keys Section -->
+    <div class="section">
+      <div id="openaiSection">
+        <input type="password" id="openaiApiKey" placeholder="Enter your OpenAI API Key">
+        <button id="saveOpenaiKey">Save OpenAI Key</button>
+      </div>
+      <div id="geminiSection" style="display: none;">
+        <input type="password" id="geminiApiKey" placeholder="Enter your Google Gemini API Key">
+        <button id="saveGeminiKey">Save Gemini Key</button>
+      </div>
+      <div id="assemblyaiSection">
+        <input type="password" id="assemblyaiApiKey" placeholder="Enter your AssemblyAI API Key">
+        <button id="saveAssemblyaiKey">Save AssemblyAI Key</button>
+      </div>
+    </div>
+
+    <!-- Context Upload Section -->
+    <div class="section">
+      <h4>Interview Context</h4>
+      <div class="context-upload">
+        <label for="jobDescription">Job Description:</label>
+        <textarea id="jobDescription" placeholder="Paste job description here..."></textarea>
+        <input type="file" id="jobDescriptionFile" accept=".txt,.pdf,.doc,.docx" style="display: none;">
+        <button id="uploadJobDesc">Upload Job Description</button>
+      </div>
+      
+      <div class="context-upload">
+        <label for="resume">Resume/CV:</label>
+        <textarea id="resume" placeholder="Paste resume content here..."></textarea>
+        <input type="file" id="resumeFile" accept=".txt,.pdf,.doc,.docx" style="display: none;">
+        <button id="uploadResume">Upload Resume</button>
+      </div>
+      
+      <button id="saveContext">Save Context</button>
+    </div>
+
+    <!-- Recording Controls -->
+    <div class="section">
+      <button id="toggleListening">Start Listening</button>
+      <button id="saveTranscript" style="display: none;">Save Transcript</button>
+    </div>
+
+    <!-- Real-time Display -->
+    <div class="section">
+      <div id="transcript"></div>
+      <div id="aiResponse"></div>
+    </div>
+
+    <!-- Transcript History -->
+    <div class="section">
+      <h4>Transcript History</h4>
+      <div id="transcriptHistory"></div>
+      <button id="clearHistory">Clear History</button>
+    </div>
+
+    <!-- Status -->
+    <div id="status"></div>
   </div>
   <script src="sidepanel.js"></script>
 </body>
